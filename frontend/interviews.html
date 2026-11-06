@@ -1,0 +1,470 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mock Interviews | Asra's AI Assistant</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .interview-container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 24px;
+    }
+    .interview-card {
+      background: var(--card-bg, #fff);
+      border: 1px solid var(--border-color, #ddd);
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .interview-card h2 { margin-top: 0; }
+    .interview-form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .interview-form label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 7px;
+    }
+    .interview-form select,
+    .interview-form textarea {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 11px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font: inherit;
+    }
+    .interview-form textarea { min-height: 150px; resize: vertical; }
+    .interview-button {
+      border: 0;
+      border-radius: 8px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 600;
+      background: #3157d5;
+      color: white;
+    }
+    .interview-button:disabled { opacity: .5; cursor: not-allowed; }
+    .secondary-button { background: #555; }
+    .question-meta { color: #666; margin-bottom: 12px; }
+    .interview-progress {
+      height: 8px;
+      background: #e6e6e6;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 14px 0;
+    }
+    #progress-fill {
+      height: 100%;
+      width: 0;
+      background: #3157d5;
+      transition: width .2s;
+    }
+    .interview-status { margin-top: 14px; }
+    .result-score { font-size: 2rem; font-weight: 700; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="interview-container">
+    
+<section id="interview-history">
+  <h2>Previous Interviews</h2>
+  <div id="interview-history-list">
+    <p>Loading your previous interviews...</p>
+  </div>
+</section>
+
+    <h1>Mock Interview</h1>
+    <p>Practice role-specific questions, submit your answers, and review your results.</p>
+
+    <section class="interview-card" id="setup-section">
+      <h2>Set up your interview</h2>
+      <form id="setup-form">
+        <div class="interview-form">
+          <div>
+            <label for="role">Target role</label>
+            <select id="role" required>
+              <option value="Data Scientist">Data Scientist</option>
+              <option value="Data Analyst">Data Analyst</option>
+              <option value="Python Developer">Python Developer</option>
+              <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+              <option value="Generative AI Developer">Generative AI Developer</option>
+            </select>
+          </div>
+          <div>
+            <label for="difficulty">Difficulty</label>
+            <select id="difficulty" required>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </div>
+          <div>
+            <label for="interview-type">Interview type</label>
+            <select id="interview-type" required>
+              <option value="Technical">Technical</option>
+              <option value="Behavioral">Behavioral</option>
+              <option value="Mixed">Mixed</option>
+            </select>
+          </div>
+        </div>
+        <p><button class="interview-button" type="submit">Start Interview</button></p>
+      </form>
+    </section>
+
+    <section class="interview-card hidden" id="question-section">
+      <div class="question-meta" id="question-meta"></div>
+      <div class="interview-progress"><div id="progress-fill"></div></div>
+      <h2 id="question-text"></h2>
+      <form id="answer-form">
+        <label for="answer">Your answer</label>
+        <textarea id="answer" required minlength="5"
+          placeholder="Write your answer here..."></textarea>
+        <p>
+          <button class="interview-button" type="submit" id="submit-answer">
+            Submit Answer
+          </button>
+        </p>
+      </form>
+      <p class="interview-status" id="interview-status" role="status"></p>
+    </section>
+
+    <section class="interview-card hidden" id="result-section">
+      <h2>Interview Results</h2>
+      <p class="result-score" id="result-score"></p>
+      <p id="result-summary"></p>
+      <h3>Review your answers</h3>
+      <div id="answer-review"></div>
+      <button class="interview-button" id="try-again" type="button">
+        Start Another Interview
+      </button>
+      <p class="interview-status" id="result-status" role="status"></p>
+    </section>
+
+    <p><a href="dashboard.html">Back to dashboard</a></p>
+  </div>
+
+  <script>
+    const questions = {
+      "Data Scientist": {
+        Technical: [
+          "Explain the difference between supervised and unsupervised learning.",
+          "What is overfitting, and how can you reduce it?",
+          "How would you evaluate a classification model?"
+        ],
+        Behavioral: [
+          "Tell me about a project where you used data to solve a problem.",
+          "Describe a difficult problem you faced and how you solved it.",
+          "How do you explain a technical result to a non-technical person?"
+        ]
+      },
+      "Data Analyst": {
+        Technical: [
+          "What is the difference between WHERE and HAVING in SQL?",
+          "How would you handle missing values in a dataset?",
+          "What makes a dashboard useful to a business stakeholder?"
+        ],
+        Behavioral: [
+          "Tell me about a time you found an insight in data.",
+          "How would you handle a stakeholder requesting an unclear report?",
+          "Describe how you prioritize multiple analysis requests."
+        ]
+      },
+      "Python Developer": {
+        Technical: [
+          "Explain the difference between a list and a tuple in Python.",
+          "What are exceptions, and how do you handle them?",
+          "What is the purpose of a Python virtual environment?"
+        ],
+        Behavioral: [
+          "Describe a programming problem you solved.",
+          "How do you debug code that produces an unexpected result?",
+          "How do you approach learning an unfamiliar library?"
+        ]
+      },
+      "Machine Learning Engineer": {
+        Technical: [
+          "Explain the difference between training, validation, and test data.",
+          "What is data leakage, and why is it dangerous?",
+          "How would you monitor a deployed machine learning model?"
+        ],
+        Behavioral: [
+          "Describe a machine learning project you worked on.",
+          "How would you explain a model's limitations to a team?",
+          "Tell me about a technical decision you would approach differently now."
+        ]
+      },
+      "Generative AI Developer": {
+        Technical: [
+          "What is retrieval-augmented generation (RAG), and why is it useful?",
+          "What is the purpose of embeddings in a vector database?",
+          "How would you reduce hallucinations in an AI application?"
+        ],
+        Behavioral: [
+          "Describe an AI application you would like to build.",
+          "How would you evaluate whether an AI feature is useful?",
+          "How would you handle unreliable output from an AI model?"
+        ]
+      }
+    };
+
+    const $ = id => document.getElementById(id);
+    let interview = null;
+    let questionIndex = 0;
+    let answers = [];
+
+    $("setup-form").addEventListener("submit", event => {
+      event.preventDefault();
+
+      const role = $("role").value;
+      const type = $("interview-type").value;
+      let selected = questions[role];
+
+      let pool = type === "Mixed"
+        ? [...selected.Technical, ...selected.Behavioral]
+        : [...selected[type]];
+
+      if ($("difficulty").value === "Advanced") {
+        pool = [...pool].reverse();
+      }
+
+      interview = {
+        role,
+        difficulty: $("difficulty").value,
+        type,
+        questions: pool.slice(0, 3)
+      };
+      questionIndex = 0;
+      answers = [];
+
+      $("setup-section").classList.add("hidden");
+      $("result-section").classList.add("hidden");
+      $("question-section").classList.remove("hidden");
+      showQuestion();
+    });
+
+    function showQuestion() {
+      const total = interview.questions.length;
+      $("question-meta").textContent =
+        `${interview.role} · ${interview.difficulty} · Question ${questionIndex + 1} of ${total}`;
+      $("question-text").textContent = interview.questions[questionIndex];
+      $("progress-fill").style.width = `${questionIndex / total * 100}%`;
+      $("answer").value = "";
+      $("interview-status").textContent = "";
+      $("submit-answer").disabled = false;
+    }
+
+    $("answer-form").addEventListener("submit", event => {
+      event.preventDefault();
+      const answer = $("answer").value.trim();
+
+      if (answer.length < 5) {
+        $("interview-status").textContent = "Please write a little more before submitting.";
+        return;
+      }
+
+      answers.push({
+        question: interview.questions[questionIndex],
+        answer
+      });
+
+      questionIndex++;
+
+      if (questionIndex < interview.questions.length) {
+        showQuestion();
+      } else {
+        showResults();
+      }
+    });
+
+    function showResults() {
+      $("question-section").classList.add("hidden");
+      $("result-section").classList.remove("hidden");
+      $("progress-fill").style.width = "100%";
+
+      const averageLength = answers.reduce(
+        (sum, item) => sum + item.answer.trim().split(/\s+/).length, 0
+      ) / answers.length;
+
+      const score = Math.min(100, Math.round(
+        answers.reduce((sum, item) => {
+          const words = item.answer.trim().split(/\s+/).length;
+          return sum + (words >= 40 ? 100 : words >= 20 ? 80 : words >= 10 ? 60 : 40);
+        }, 0) / answers.length
+      ));
+
+      $("result-score").textContent = `${score}/100`;
+      $("result-summary").textContent =
+        `You completed ${answers.length} questions. This initial score reflects answer length only, not correctness. Aim to explain your reasoning, give specific examples, and describe results.`;
+
+      $("answer-review").replaceChildren();
+      answers.forEach((item, index) => {
+        const article = document.createElement("article");
+        article.className = "interview-card";
+
+        const heading = document.createElement("h4");
+        heading.textContent = `Question ${index + 1}: ${item.question}`;
+
+        const response = document.createElement("p");
+        response.textContent = `Your answer: ${item.answer}`;
+
+        article.append(heading, response);
+        $("answer-review").append(article);
+      });
+
+      saveInterviewResults(score);
+
+      
+async function saveInterviewResults(score) {
+  const userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    $("result-status").textContent =
+      "Interview completed, but no user ID was found. Please save your profile or sign in first.";
+    return;
+  }
+
+  $("result-status").textContent = "Saving interview results...";
+
+  try {
+    const response = await fetch("http://127.0.0.1:8018/api/interviews", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        role: interview.role,
+        difficulty: interview.difficulty,
+        interview_type: interview.type,
+        answers: answers,
+        score: score,
+        total_questions: interview.questions.length
+      })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Could not save interview results.");
+    }
+
+    $("result-status").textContent =
+      "Interview results saved successfully!";
+  } catch (error) {
+    console.error("Interview save failed:", error);
+    $("result-status").textContent =
+      "Could not save interview results. Check that the backend is running.";
+  }
+}
+
+    }
+    $("try-again").addEventListener("click", () => {
+      $("result-section").classList.add("hidden");
+      $("setup-section").classList.remove("hidden");
+      $("result-status").textContent = "";
+    });
+    
+async function loadInterviewHistory() {
+  const historyList = document.getElementById("interview-history-list");
+  const userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    historyList.innerHTML = "<p>Please sign in to view your previous interviews.</p>";
+    return;
+  }
+
+  historyList.innerHTML = "<p>Loading your previous interviews...</p>";
+
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8018/api/interviews/${encodeURIComponent(userId)}`
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Unable to load interview history.");
+    }
+
+    if (!data.history || data.history.length === 0) {
+      historyList.innerHTML = "<p>No previous interviews yet. Start your first interview below!</p>";
+      return;
+    }
+
+    historyList.innerHTML = "";
+
+    data.history.forEach((item) => {
+      const card = document.createElement("div");
+      card.style.cssText =
+        "border:1px solid #ddd; border-radius:8px; padding:12px; margin:10px 0;";
+
+      const heading = document.createElement("h3");
+      heading.textContent = item.role || "Mock Interview";
+
+      const details = document.createElement("p");
+      details.textContent =
+        `Difficulty: ${item.difficulty || "N/A"} | ` +
+        `Type: ${item.interview_type || "N/A"}`;
+
+      const score = document.createElement("p");
+      score.textContent =
+        `Score: ${item.score ?? "N/A"}/${item.score == null ? "N/A" : "100"}`;
+
+      const date = document.createElement("p");
+      date.textContent = item.created_at
+        ? `Date: ${new Date(item.created_at).toLocaleString()}`
+        : "";
+
+      const viewButton = document.createElement("button");
+viewButton.textContent = "View Answers";
+viewButton.type = "button";
+
+const answersContainer = document.createElement("div");
+answersContainer.hidden = true;
+
+viewButton.addEventListener("click", () => {
+  answersContainer.hidden = !answersContainer.hidden;
+  viewButton.textContent = answersContainer.hidden
+    ? "View Answers"
+    : "Hide Answers";
+
+  if (!answersContainer.hasChildNodes()) {
+    (item.answers || []).forEach((entry, index) => {
+      const question = document.createElement("p");
+      question.textContent = `${index + 1}. ${entry.question || "Question"}`;
+
+      const answer = document.createElement("p");
+      answer.textContent = `Your answer: ${entry.answer || "No answer recorded"}`;
+
+      answersContainer.append(question, answer);
+    });
+
+    if (!item.answers || item.answers.length === 0) {
+      answersContainer.textContent = "No answers were saved for this interview.";
+    }
+  }
+});
+
+card.append(heading, details, score, date, viewButton, answersContainer);
+      historyList.appendChild(card);
+    });
+  } catch (error) {
+    console.error("Interview history error:", error);
+    historyList.innerHTML =
+      "<p>Could not load interview history. Please check that the backend is running.</p>";
+  }
+}
+
+loadInterviewHistory();
+
+  </script>
+</body>
+</html>

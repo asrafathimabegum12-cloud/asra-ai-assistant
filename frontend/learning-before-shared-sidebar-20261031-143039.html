@@ -1,0 +1,603 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Learning Path | Asra's AI Assistant</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    .learning-content { display: grid; gap: 22px; }
+    .learning-card {
+      background: var(--card-bg, #fff);
+      border: 1px solid var(--border-color, #e5e7eb);
+      border-radius: 16px;
+      padding: 24px;
+      min-width: 0;
+    }
+    .learning-card h2 { margin-top: 0; }
+    .learning-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .learning-form label { display: grid; gap: 7px; font-weight: 600; }
+    .learning-form input, .learning-form select {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      background: var(--input-bg, #fff);
+      color: inherit;
+      font: inherit;
+    }
+    .learning-form .full-width { grid-column: 1 / -1; }
+    .learning-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .summary-item {
+      padding: 17px;
+      border-radius: 12px;
+      background: var(--surface-secondary, #f3f6fa);
+    }
+    .summary-item strong { display: block; font-size: 25px; margin-top: 8px; }
+    .learning-progress-track {
+      height: 9px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: #e5e7eb;
+      margin: 12px 0;
+    }
+    .learning-progress-fill {
+      height: 100%;
+      width: 0;
+      background: #16845b;
+      transition: width .2s ease;
+    }
+    .week-card { margin-top: 15px; }
+    .week-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .task-list { display: grid; gap: 12px; margin-top: 16px; }
+    .learning-task {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--border-color, #e5e7eb);
+      border-radius: 10px;
+    }
+    .learning-task input { margin-top: 5px; width: 17px; height: 17px; }
+    .learning-task p { margin: 5px 0 0; color: var(--muted-text, #64748b); }
+    .learning-task.done .task-title { text-decoration: line-through; opacity: .65; }
+    .learning-muted { color: var(--muted-text, #64748b); }
+    .learning-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+    .learning-status { margin-top: 12px; }
+    @media (max-width: 650px) {
+      .learning-form, .learning-summary { grid-template-columns: 1fr; }
+      .learning-form .full-width { grid-column: auto; }
+      .learning-card { padding: 17px; }
+    }
+  </style>
+</head>
+
+<body class="dashboard-body">
+  <div class="dashboard-shell">
+    <aside class="sidebar">
+      <div class="brand-wrap sidebar-brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <p class="eyebrow">Career Tools</p>
+          <h2>Asra AI</h2>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Main navigation">
+        <a class="nav-item" href="dashboard.html">Home</a>
+        <a class="nav-item" href="tutor.html">AI Tutor</a>
+        <a class="nav-item" href="tests.html">Practice Tests</a>
+        <a class="nav-item" href="performance.html">Performance Tracker</a>
+        <a class="nav-item" href="resume.html">Resume Analyzer</a>
+        <a class="nav-item" href="jobs.html">Job Recommendations</a>
+        <a class="nav-item active" href="learning.html">Learning Plans</a>
+        <a class="nav-item" href="interviews.html">Mock Interviews</a>
+        <a class="nav-item" href="profile.html">My Profile</a>
+      </nav>
+    </aside>
+
+    <main class="workspace-main">
+      <header class="workspace-header">
+        <div>
+          <p class="eyebrow">Your personalized roadmap</p>
+          <h1>Learning Path</h1>
+          <p class="learning-muted">Turn your career goal into weekly learning targets.</p>
+        </div>
+      </header>
+
+      <div class="learning-content">
+        <section class="learning-card">
+          <h2>Build your learning plan</h2>
+          <p class="learning-muted">
+            Choose your goal and current level to create a starter roadmap.
+          </p>
+
+          <form id="learning-form" class="learning-form">
+            <label>
+              Career goal
+              <select id="career-goal" required>
+                <option value="Data Scientist Internship">Data Scientist Internship</option>
+                <option value="Data Analyst Internship">Data Analyst Internship</option>
+                <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+                <option value="Python Developer">Python Developer</option>
+                <option value="Generative AI Developer">Generative AI Developer</option>
+                <option value="Custom Goal">Other career goal</option>
+              </select>
+            </label>
+
+            <label>
+              Current level
+              <select id="current-level" required>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </label>
+
+            <label>
+              Study time per day
+              <select id="study-time">
+                <option value="30">30 minutes</option>
+                <option value="60" selected>1 hour</option>
+                <option value="120">2 hours</option>
+                <option value="180">3 hours</option>
+              </select>
+            </label>
+
+            <label>
+              Plan duration
+              <select id="plan-duration">
+                <option value="4">4 weeks</option>
+                <option value="6" selected>6 weeks</option>
+                <option value="8">8 weeks</option>
+                <option value="12">12 weeks</option>
+              </select>
+            </label>
+
+            <label class="full-width">
+              Skills you already know
+              <input id="existing-skills"
+                placeholder="e.g. Python, SQL, Excel, Pandas" />
+            </label>
+
+            <label class="full-width">
+              Topics you want to improve
+              <input id="focus-topics"
+                placeholder="e.g. statistics, machine learning, projects" />
+            </label>
+
+            <div class="full-width">
+              <button class="btn btn-primary" type="submit">Create My Roadmap</button>
+            </div>
+          </form>
+          <p id="learning-status" class="learning-status learning-muted" role="status"></p>
+        </section>
+
+        <section class="learning-card" aria-labelledby="overview-title">
+          <h2 id="overview-title">Your progress</h2>
+          <div class="learning-summary">
+            <div class="summary-item">
+              <span class="learning-muted">Tasks completed</span>
+              <strong id="completed-count">0 / 0</strong>
+            </div>
+            <div class="summary-item">
+              <span class="learning-muted">Overall progress</span>
+              <strong id="progress-percent">0%</strong>
+            </div>
+            <div class="summary-item">
+              <span class="learning-muted">Daily study target</span>
+              <strong id="daily-target">1 hr</strong>
+            </div>
+          </div>
+          <div class="learning-progress-track"
+            role="progressbar" aria-label="Overall learning progress"
+            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"
+            id="progress-bar">
+            <div class="learning-progress-fill" id="progress-fill"></div>
+          </div>
+          <p class="learning-muted" id="progress-message">
+            Create your roadmap and complete tasks to track progress.
+          </p>
+        </section>
+
+        <section class="learning-card">
+          <div class="week-heading">
+            <div>
+              <h2>Weekly roadmap</h2>
+              <p class="learning-muted" id="roadmap-description">
+                Your learning tasks will appear here.
+              </p>
+            </div>
+            <button type="button" class="btn" id="reset-progress">Reset progress</button>
+          </div>
+          <div id="roadmap-weeks">
+            <p class="learning-muted">
+              Create your roadmap above to see weekly topics, practice tasks,
+              and mini-projects.
+            </p>
+          </div>
+        </section>
+
+        <section class="learning-card">
+          <h2>Need help with a topic?</h2>
+          <p class="learning-muted">
+            Open your AI Tutor to study concepts, ask questions, and get explanations.
+          </p>
+          <a class="btn btn-primary" href="tutor.html">Go to AI Tutor</a>
+        </section>
+        <section class="learning-card" style="margin-top:24px;">
+          <p class="eyebrow">Career development</p>
+          <h2>Career Roadmap</h2>
+          <p class="learning-muted">
+            Track the skills, technologies, projects, and milestones
+            needed for your target career.
+          </p>
+
+          <div class="mini-form compact-form">
+            <select id="roadmapRoleSelect">
+              <option value="Data Scientist">Data Scientist</option>
+              <option value="Data Analyst">Data Analyst</option>
+              <option value="Python Developer">Python Developer</option>
+              <option value="ML Engineer">ML Engineer</option>
+            </select>
+
+            <button id="generateRoadmapBtn" class="btn btn-secondary" type="button">
+              Generate Roadmap
+            </button>
+          </div>
+
+          <div id="roadmapContainer" class="list-shell"></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const STORAGE_KEY = "asra_learning_plan_v1";
+      const $ = (id) => document.getElementById(id);
+
+      const form = $("learning-form");
+      const weeksContainer = $("roadmap-weeks");
+      const status = $("learning-status");
+
+      let plan = null;
+
+      const templates = {
+        "Data Scientist Internship": [
+          ["Python foundations", "Revise Python, functions, collections, and write small programs."],
+          ["Data analysis", "Practice NumPy, Pandas, data cleaning, and exploratory data analysis."],
+          ["SQL and databases", "Practice SELECT, JOIN, GROUP BY, subqueries, and interview questions."],
+          ["Statistics", "Study probability, distributions, hypothesis testing, and correlation."],
+          ["Machine learning", "Learn regression, classification, evaluation metrics, and model validation."],
+          ["Portfolio and interview practice", "Improve a data project, document it on GitHub, and practice interview questions."]
+        ],
+        "Data Analyst Internship": [
+          ["Excel and data basics", "Practice formulas, sorting, filtering, pivot tables, and data cleaning."],
+          ["SQL foundations", "Practice SELECT, filtering, JOIN, GROUP BY, and subqueries."],
+          ["Python for analysis", "Use Pandas and NumPy to clean and analyze datasets."],
+          ["Visualization", "Build clear charts and dashboards; explain the insights they show."],
+          ["Statistics and business insights", "Practice averages, distributions, trends, and KPI analysis."],
+          ["Portfolio and interview practice", "Finish an analytics project and practice explaining your findings."]
+        ],
+        "Machine Learning Engineer": [
+          ["Python and data handling", "Practice Python, NumPy, Pandas, and clean code."],
+          ["Math and statistics", "Revise linear algebra, probability, statistics, and optimization basics."],
+          ["Machine learning", "Train regression and classification models and evaluate them."],
+          ["Model improvement", "Practice feature engineering, validation, pipelines, and tuning."],
+          ["Deployment foundations", "Build a simple API for a trained model and test its predictions."],
+          ["End-to-end project", "Document, test, and publish an end-to-end ML project."]
+        ],
+        "Python Developer": [
+          ["Python foundations", "Practice data types, conditions, loops, functions, and modules."],
+          ["Data structures", "Practice lists, dictionaries, sets, exceptions, and problem solving."],
+          ["Files and APIs", "Work with JSON, files, HTTP requests, and external APIs."],
+          ["Databases and testing", "Practice database operations, SQL, debugging, and unit tests."],
+          ["Backend development", "Build a small API and validate requests and responses."],
+          ["Portfolio project", "Finish a Python application, test it, and document how to run it."]
+        ],
+        "Generative AI Developer": [
+          ["Python and API basics", "Practice Python, JSON, HTTP requests, and API keys safely."],
+          ["LLM fundamentals", "Learn tokens, prompts, context windows, and model limitations."],
+          ["Prompt engineering", "Practice structured prompts, examples, and output validation."],
+          ["Embeddings and RAG", "Explore document chunking, embeddings, retrieval, and citations."],
+          ["Build an AI application", "Connect an LLM to a small application and test its responses."],
+          ["Portfolio and evaluation", "Measure answer quality, handle errors, and document your project."]
+        ],
+        "Custom Goal": [
+          ["Foundations", "List the core concepts and complete introductory learning exercises."],
+          ["Core skills", "Practice the main tools and skills required for your chosen goal."],
+          ["Guided practice", "Complete exercises and review mistakes."],
+          ["Applied learning", "Build a small project using the skills you have learned."],
+          ["Improve and revise", "Review weak areas and improve your project."],
+          ["Portfolio and review", "Document your work and prepare to explain what you learned."]
+        ]
+      };
+
+      function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, (char) => ({
+          "&": "&amp;", "<": "&lt;", ">": "&gt;",
+          '"': "&quot;", "'": "&#39;"
+        })[char]);
+      }
+
+      function buildPlan(settings) {
+        const allWeeks = templates[settings.goal] || templates["Custom Goal"];
+        const duration = Number(settings.duration);
+        const skills = settings.skills
+          .split(",").map(s => s.trim()).filter(Boolean);
+        const focus = settings.focus
+          .split(",").map(s => s.trim()).filter(Boolean);
+
+        const topics = [];
+
+        for (let i = 0; i < duration; i++) {
+          const base = allWeeks[Math.min(
+            allWeeks.length - 1,
+            Math.floor(i * allWeeks.length / duration)
+          )];
+
+          let title = base[0];
+          let description = base[1];
+
+          if (i === 0 && skills.length) {
+            description += " Build on your existing skills: " +
+              skills.slice(0, 5).join(", ") + ".";
+          }
+
+          if (i === 0 && focus.length) {
+            description += " Prioritize: " + focus.slice(0, 5).join(", ") + ".";
+          }
+
+          if (settings.level === "Beginner") {
+            description += " Start with fundamentals and short guided exercises.";
+          } else if (settings.level === "Advanced") {
+            description += " Focus on deeper practice, trade-offs, and realistic problems.";
+          }
+
+          const tasks = [
+            { title: "Learn: " + title, description, done: false },
+            {
+              title: "Practice and revise",
+              description: "Spend time on hands-on exercises and review your mistakes.",
+              done: false
+            },
+            {
+              title: "Apply your learning",
+              description: i === duration - 1
+                ? "Review the roadmap, polish your portfolio, and assess what to learn next."
+                : "Complete a small exercise or mini-project related to this week's topic.",
+              done: false
+            }
+          ];
+
+          topics.push({ number: i + 1, title, tasks });
+        }
+
+        return { settings, weeks: topics, updatedAt: new Date().toISOString() };
+      }
+
+      
+async function savePlan() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
+
+    const userId = localStorage.getItem("user_id");
+
+    if (!userId) {
+      status.textContent =
+        "Plan saved in this browser. Sign in or load your profile to sync with MongoDB.";
+      return;
+    }
+
+    const response = await fetch(
+      `http://127.0.0.1:8018/api/learning/${encodeURIComponent(userId)}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(plan)
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`API returned ${response.status}`);
+    }
+
+    status.textContent = "Your plan and task progress are saved to MongoDB.";
+  } catch (error) {
+    status.textContent =
+      "Plan saved in this browser, but MongoDB sync failed.";
+    console.error("Learning plan save error:", error);
+  }
+}
+
+
+      function renderPlan() {
+        if (!plan) return;
+
+        const total = plan.weeks.reduce((sum, week) => sum + week.tasks.length, 0);
+        const completed = plan.weeks.reduce(
+          (sum, week) => sum + week.tasks.filter(task => task.done).length, 0
+        );
+        const percent = total ? Math.round(completed / total * 100) : 0;
+
+        $("completed-count").textContent = `${completed} / ${total}`;
+        $("progress-percent").textContent = `${percent}%`;
+        $("daily-target").textContent = Number(plan.settings.studyTime) >= 60
+          ? `${Number(plan.settings.studyTime) / 60} hr${Number(plan.settings.studyTime) >= 120 ? "s" : ""}`
+          : `${plan.settings.studyTime} min`;
+
+        $("progress-fill").style.width = `${percent}%`;
+        $("progress-bar").setAttribute("aria-valuenow", String(percent));
+        $("progress-message").textContent = percent === 100
+          ? "Roadmap completed! Review your skills and set your next goal."
+          : `${total - completed} tasks remaining. Keep going at your own pace.`;
+
+        $("roadmap-description").textContent =
+          `${plan.settings.goal} Â· ${plan.weeks.length} weeks Â· ${plan.settings.level} level`;
+
+        weeksContainer.innerHTML = plan.weeks.map((week, weekIndex) => {
+          const done = week.tasks.filter(task => task.done).length;
+
+          return `
+            <section class="learning-card week-card">
+              <div class="week-heading">
+                <div>
+                  <p class="eyebrow">Week ${week.number}</p>
+                  <h3>${escapeHtml(week.title)}</h3>
+                </div>
+                <span class="learning-muted">${done}/${week.tasks.length} tasks complete</span>
+              </div>
+              <div class="task-list">
+                ${week.tasks.map((task, taskIndex) => `
+                  <label class="learning-task ${task.done ? "done" : ""}">
+                    <input type="checkbox"
+                      data-week="${weekIndex}"
+                      data-task="${taskIndex}"
+                      ${task.done ? "checked" : ""} />
+                    <span>
+                      <strong class="task-title">${escapeHtml(task.title)}</strong>
+                      <p>${escapeHtml(task.description)}</p>
+                    </span>
+                  </label>
+                `).join("")}
+              </div>
+            </section>
+          `;
+        }).join("");
+      }
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const settings = {
+          goal: $("career-goal").value,
+          level: $("current-level").value,
+          studyTime: $("study-time").value,
+          duration: $("plan-duration").value,
+          skills: $("existing-skills").value,
+          focus: $("focus-topics").value
+        };
+
+        plan = buildPlan(settings);
+        savePlan();
+        renderPlan();
+        status.textContent =
+          "Starter roadmap created. Review the suggested tasks and adjust them to your needs.";
+        $("roadmap-weeks").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      weeksContainer.addEventListener("change", (event) => {
+        const checkbox = event.target;
+
+        if (!checkbox.matches('input[type="checkbox"][data-week][data-task]')) return;
+
+        const weekIndex = Number(checkbox.dataset.week);
+        const taskIndex = Number(checkbox.dataset.task);
+
+        if (!plan?.weeks[weekIndex]?.tasks[taskIndex]) return;
+
+        plan.weeks[weekIndex].tasks[taskIndex].done = checkbox.checked;
+        savePlan();
+        renderPlan();
+      });
+
+      $("reset-progress").addEventListener("click", () => {
+        if (!plan) {
+          status.textContent = "Create a roadmap first.";
+          return;
+        }
+
+        if (!confirm("Reset all completed tasks in this roadmap?")) return;
+
+        plan.weeks.forEach(week => week.tasks.forEach(task => task.done = false));
+        savePlan();
+        renderPlan();
+      });
+
+     
+async function loadSavedPlan() {
+  try {
+    const userId = localStorage.getItem("user_id");
+    let savedPlan = null;
+
+    // First, try to load the plan from MongoDB through FastAPI.
+    if (userId) {
+      try {
+        const response = await fetch(
+          `http://127.0.0.1:8018/api/learning/${encodeURIComponent(userId)}`
+        );
+
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data.plan && Array.isArray(data.plan.weeks) && data.plan.settings) {
+            savedPlan = data.plan;
+          }
+        }
+      } catch (error) {
+        console.warn("Could not load the plan from MongoDB:", error);
+      }
+    }
+
+    // If MongoDB has no plan or is unavailable, use browser storage.
+    if (!savedPlan) {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (saved) {
+        const parsed = JSON.parse(saved);
+
+        if (parsed && Array.isArray(parsed.weeks) && parsed.settings) {
+          savedPlan = parsed;
+        }
+      }
+    }
+
+    if (savedPlan) {
+      plan = savedPlan;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
+
+      $("career-goal").value = plan.settings.goal || "";
+      $("current-level").value = plan.settings.level || "";
+      $("study-time").value = plan.settings.studyTime || "";
+      $("plan-duration").value = plan.settings.duration || "";
+      $("existing-skills").value = plan.settings.skills || "";
+      $("focus-topics").value = plan.settings.focus || "";
+
+      renderPlan();
+      status.textContent = "Your saved roadmap has been restored.";
+    }
+  } catch (error) {
+    plan = null;
+    status.textContent = "A saved roadmap could not be loaded. Create a new one.";
+    console.error("Learning plan load error:", error);
+  }
+}
+
+loadSavedPlan();
+
+    })();
+  </script>
+  <script src="feature-common.js"></script>
+  <script src="roadmap.js"></script>
+</body>
+</html>
+

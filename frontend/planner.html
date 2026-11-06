@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Daily Study Planner | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Study Workspace</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item" href="dashboard.html">Home</a>
+          <a class="nav-item" href="tutor.html">AI Tutor</a>
+          <a class="nav-item" href="tests.html">Practice Tests</a>
+          <a class="nav-item" href="performance.html">Performance Tracker</a>
+          <a class="nav-item" href="resume.html">Resume Analyzer</a>
+          <a class="nav-item" href="jobs.html">Job Recommendations</a>
+          <a class="nav-item" href="profile.html">Edit Profile</a>
+          <a class="nav-item" href="planner.html">Study Planner</a>
+          <a class="nav-item" href="ats.html">ATS Score Checker</a>
+          <a class="nav-item" href="learning.html">Learning Plans</a>
+          <a class="nav-item" href="interviews.html">Mock Interviews</a>
+          <a class="nav-item" href="profile.html">My Profile</a>
+        </nav>
+      </aside>
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Daily Study Planner</p>
+            <h1>Plan and complete your study tasks</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="dashboard.html">Back to Dashboard</a>
+          </div>
+        </header>
+        <section class="workspace-panel">
+          <form id="studyPlannerForm" class="mini-form">
+            <input id="studyTaskTitle" type="text" placeholder="Add a study task" required />
+            <div class="inline-fields">
+              <input id="studyTaskDeadline" type="date" />
+              <select id="studyTaskPriority">
+                <option value="High">High</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Add task</button>
+          </form>
+          <div class="progress-wrap">
+            <div class="progress-track"><span id="plannerProgressFill"></span></div>
+            <small id="plannerCompletionText">0% complete</small>
+          </div>
+          <div id="studyTaskList" class="task-list"></div>
+        </section>
+
+<section class="workspace-panel" style="margin-top:24px;">
+  <p class="eyebrow">Interview preparation</p>
+  <h2>Interview Question Bank</h2>
+  <p>Choose a role and difficulty to practice interview questions.</p>
+
+  <div class="mini-form compact-form">
+    <select id="questionBankRole">
+      <option value="Data Scientist">Data Scientist</option>
+      <option value="Data Analyst">Data Analyst</option>
+      <option value="Python Developer">Python Developer</option>
+      <option value="Machine Learning Engineer">Machine Learning Engineer</option>
+      <option value="Generative AI Developer">Generative AI Developer</option>
+    </select>
+
+    <select id="questionBankDifficulty">
+      <option value="Beginner">Beginner</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advanced">Advanced</option>
+    </select>
+
+    <button id="loadQuestionBankBtn" class="btn btn-secondary" type="button">
+      Show Questions
+    </button>
+  </div>
+
+  <div id="questionBankList" class="list-shell"></div>
+</section>
+      </main>
+    </div>
+    <script src="feature-common.js"></script>
+    <script src="planner.js"></script>
+    <script src="question-bank.js"></script>
+  </body>
+</html>
+
+
+
+
+

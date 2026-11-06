@@ -1,0 +1,60 @@
+const atsForm = document.getElementById('atsForm');
+const atsResult = document.getElementById('atsResult');
+
+if (atsForm) {
+  atsForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    const file = document.getElementById('atsResumeInput').files[0];
+    const jobDescription = document.getElementById('atsJobDescription').value.trim();
+    if (!jobDescription) {
+      atsResult.classList.remove('hidden');
+      atsResult.innerHTML = '<div class="empty-state">Please paste the job description first.</div>';
+      return;
+    }
+
+    formData.append('job_description', jobDescription);
+    formData.append('user_id', getCurrentUserId());
+    if (file) {
+      formData.append('file', file);
+    }
+
+    atsResult.classList.remove('hidden');
+    atsResult.innerHTML = '<div class="empty-state">Analyzing resume...</div>';
+
+    try {
+      const response = await fetch(`${API_BASE}/api/ats/check`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || 'ATS check failed.');
+
+      atsResult.innerHTML = `
+        <div class="score-box">
+          <strong>${data.estimated_score}%</strong>
+          <span>Estimated ATS match</span>
+        </div>
+        <div class="info-block">
+          <strong>Matched skills:</strong> ${(data.matched_skills || []).join(', ') || 'None found'}
+        </div>
+        <div class="info-block">
+          <strong>Missing skills:</strong> ${(data.missing_skills || []).join(', ') || 'No major gaps detected'}
+        </div>
+        <div class="info-block">
+          <strong>Resume sections:</strong> ${(data.resume_sections || []).join(', ') || 'None detected'}
+        </div>
+        <div class="info-block">
+          <strong>Improvement suggestions:</strong>
+          <ul class="bullet-list">
+            ${(data.improvement_suggestions || []).map((item) => `<li>${item}</li>`).join('') || '<li>No extra suggestions.</li>'}
+          </ul>
+        </div>
+        <p class="match-note">${data.estimated_match_note || ''}</p>
+      `;
+    } catch (error) {
+      atsResult.innerHTML = `<div class="empty-state">${error.message || 'Unable to check ATS score.'}</div>`;
+    }
+  });
+}

@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Tutor Workspace | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Workspace</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item" href="dashboard.html">Home</a>
+          <a class="nav-item" href="tutor.html">AI Tutor</a>
+          <a class="nav-item" href="tests.html">Practice Tests</a>
+          <a class="nav-item" href="performance.html">Performance Tracker</a>
+          <a class="nav-item" href="resume.html">Resume Analyzer</a>
+          <a class="nav-item" href="jobs.html">Job Recommendations</a>
+          <a class="nav-item" href="profile.html">Edit Profile</a>
+          <a class="nav-item" href="planner.html">Study Planner</a>
+          <a class="nav-item" href="ats.html">ATS Score Checker</a>
+          <a class="nav-item" href="learning.html">Learning Plans</a>
+          <a class="nav-item" href="interviews.html">Mock Interviews</a>
+          <a class="nav-item" href="profile.html">My Profile</a>
+        </nav>
+      </aside>
+
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">AI Tutor</p>
+            <h1>Dedicated learning workspace</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="dashboard.html">Back to dashboard</a>
+          </div>
+        </header>
+
+        <section class="workspace-panel tutor-panel">
+          <div class="chat-shell">
+            <div class="chat-shell-header">
+              <div>
+                <p class="eyebrow">Asra's AI Tutor</p>
+                <h2>Ask about your goals, skills, and next steps</h2>
+              </div>
+              <span class="status-pill">Personalized</span>
+            </div>
+
+            <div id="ai-chat-messages" class="workspace-chat-messages" aria-live="polite">
+              <div class="bot-message">Hi! I'm your AI Tutor. Ask me about interview prep, learning plans, or career direction.</div>
+            </div>
+            
+<div class="pdf-upload-panel" style="margin: 16px 0;">
+  <div style="margin: 16px 0; padding: 12px; border: 1px solid #ccc; border-radius: 8px;">
+</div>
+  <label for="tutor-pdf"><strong>Study from a PDF</strong></label>
+  <p>Upload lecture notes or study material (PDF, up to 5 MB).</p>
+  <input id="tutor-pdf" type="file" accept=".pdf,application/pdf" />
+  <button id="upload-tutor-pdf" type="button" class="btn btn-secondary">
+    Upload PDF
+  </button>
+  <span id="tutor-pdf-status" role="status"></span>
+  <button id="remove-tutor-pdf" type="button" class="btn btn-secondary" hidden>
+    Remove PDF
+  </button>
+</div>
+
+            <form id="ai-chat-form" class="workspace-chat-form">
+              <input id="ai-chat-input" type="text" placeholder="Ask a question..." aria-label="Ask the tutor a question" />
+              <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Question Bank | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Growth Tools</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item" href="dashboard.html">Home</a>
+          <a class="nav-item" href="planner.html">Study Planner</a>
+          <a class="nav-item" href="quiz.html">Technical Quiz</a>
+          <a class="nav-item active" href="question-bank.html">Question Bank</a>
+          <a class="nav-item" href="roadmap.html">Career Roadmap</a>
+          <a class="nav-item" href="ats.html">ATS Checker</a>
+          <a class="nav-item" href="notes.html">Notes</a>
+          <a class="nav-item" href="achievements.html">Achievements</a>
+        </nav>
+      </aside>
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Interview Question Bank</p>
+            <h1>Practice questions and save your progress</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="dashboard.html">Back to Dashboard</a>
+          </div>
+        </header>
+        <section class="workspace-panel">
+          <div class="mini-form compact-form">
+            <select id="questionBankRole">
+              <option value="Data Scientist">Data Scientist</option>
+              <option value="Data Analyst">Data Analyst</option>
+              <option value="Python Developer">Python Developer</option>
+              <option value="ML Engineer">ML Engineer</option>
+            </select>
+            <select id="questionBankDifficulty">
+              <option value="">All levels</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Intermediate">Intermediate</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+            <button id="loadQuestionBankBtn" class="btn btn-secondary" type="button">Show questions</button>
+          </div>
+          <div id="questionBankList" class="list-shell"></div>
+        </section>
+      </main>
+    </div>
+    <script src="feature-common.js"></script>
+    <script src="question-bank.js"></script>
+  </body>
+</html>

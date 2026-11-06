@@ -1,0 +1,704 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Job Recommendations | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Career Tools</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item" href="dashboard.html">Home</a>
+          <a class="nav-item" href="tutor.html">AI Tutor</a>
+          <a class="nav-item" href="tests.html">Practice Tests</a>
+          <a class="nav-item" href="performance.html">Performance Tracker</a>
+          <a class="nav-item" href="resume.html">Resume Analyzer</a>
+          <a class="nav-item" href="jobs.html">Job Recommendations</a>
+          <a class="nav-item" href="profile.html">Edit Profile</a>
+          <a class="nav-item" href="planner.html">Study Planner</a>
+          <a class="nav-item" href="ats.html">ATS Score Checker</a>
+          <a class="nav-item" href="learning.html">Learning Plans</a>
+          <a class="nav-item" href="interviews.html">Mock Interviews</a>
+          <a class="nav-item" href="profile.html">My Profile</a>
+        </nav>
+      </aside>
+
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Job Recommendations</p>
+            <h1>Role fit and next steps</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="dashboard.html">Back to dashboard</a>
+          </div>
+        </header>
+
+        <section class="workspace-panel">
+        <form id="job-form" class="job-form" onsubmit="return false;"></form>
+            <div class="job-form-grid">
+              <div class="field-group">
+                <label for="preferred-role">Preferred job role</label>
+                <input id="preferred-role" name="preferred_role" type="text" placeholder="e.g. Python Developer" />
+              </div>
+
+              <div class="field-group">
+                <label for="experience-level">Experience level</label>
+                <select id="experience-level" name="experience_level">
+                  <option value="">Select level</option>
+                  <option value="Entry-level">Entry-level</option>
+                  <option value="Mid-level">Mid-level</option>
+                  <option value="Senior">Senior</option>
+                </select>
+              </div>
+
+              <div class="field-group">
+                <label for="location-preference">Location preference</label>
+                <input id="location-preference" name="location_preference" type="text" placeholder="Remote, Bengaluru, Hybrid" />
+              </div>
+
+              <div class="field-group job-full">
+                <label for="key-skills">Key skills</label>
+                <textarea id="key-skills" name="key_skills" rows="5" placeholder="Python, SQL, FastAPI, Git, Docker, communication"></textarea>
+              </div>
+            </div>
+
+            <div class="job-inline-row">
+              <label class="checkbox-row" for="use-resume-insights">
+                <input id="use-resume-insights" type="checkbox" checked />
+                <span>Use my last resume analysis insights when available</span>
+              </label>
+            </div>
+
+            
+<div class="form-actions job-actions">
+  <button type="button" id="load-profile-btn" class="btn btn-secondary">
+    Load my profile
+  </button>
+
+  <button type="submit" id="job-submit" class="btn btn-primary">
+    Find recommendations
+  </button>
+</div>
+
+            <div id="job-error" class="error-text hidden" aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="job-results" class="workspace-panel hidden" aria-live="polite">
+          <div id="job-empty" class="state-block">Your recommendations will appear here once you fill in your goals and skills.</div>
+          <div id="job-loading" class="state-block hidden">Finding the strongest role matches for you...</div>
+          <div id="job-result-list" class="job-results-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const jobForm = document.getElementById('job-form');
+      const jobError = document.getElementById('job-error');
+      const jobResults = document.getElementById('job-results');
+      const jobEmpty = document.getElementById('job-empty');
+      const jobLoading = document.getElementById('job-loading');
+      const jobResultList = document.getElementById('job-result-list');
+      const jobSubmit = document.getElementById('job-submit');
+      const loadProfileBtn = document.getElementById('load-profile-btn');
+      const preferredRole = document.getElementById('preferred-role');
+      const experienceLevel = document.getElementById('experience-level');
+      const locationPreference = document.getElementById('location-preference');
+      const keySkills = document.getElementById('key-skills');
+
+      function setJobError(message) {
+        jobError.textContent = message || 'Unable to generate recommendations.';
+        jobError.classList.remove('hidden');
+      }
+
+      function clearJobError() {
+        jobError.textContent = '';
+        jobError.classList.add('hidden');
+      }
+
+      function showJobLoading(show) {
+  jobLoading.classList.toggle('hidden', show);
+  jobEmpty.classList.add('hidden');
+  jobResultList.classList.toggle('hidden', show);
+}
+      function renderRecommendationCard(recommendation) {
+        const card = document.createElement('article');
+        card.className = 'job-card';
+
+        const requiredSkills = (recommendation.required_skills || []).map((skill) => `<li>${skill}</li>`).join('');
+        const matchedSkills = (recommendation.matched_skills || []).map((skill) => `<li>${skill}</li>`).join('');
+        const missingSkills = (recommendation.missing_skills || []).map((skill) => `<li>${skill}</li>`).join('');
+        const steps = (recommendation.suggested_next_steps || []).map((step) => `<li>${step}</li>`).join('');
+
+        card.innerHTML = `
+          <div class="job-header-row">
+            <div>
+              <span class="role-badge">${recommendation.family || 'Career Track'}</span>
+              <h3>${recommendation.title}</h3>
+            </div>
+            <span class="job-score">${recommendation.score || 0}%</span>
+          </div>
+          <p class="job-summary">${recommendation.match_reason || recommendation.description || 'A good fit for your current profile.'}</p>
+          <div class="job-meta-grid">
+            <div>
+              <h4>Required skills</h4>
+              <ul class="pill-list">${requiredSkills || '<li>No skill list provided.</li>'}</ul>
+            </div>
+            <div>
+              <h4>Matching skills</h4>
+              <ul class="pill-list positive-list">${matchedSkills || '<li>No strong matches yet.</li>'}</ul>
+            </div>
+            <div>
+              <h4>Missing skills</h4>
+              <ul class="pill-list warning-list">${missingSkills || '<li>No major gaps detected.</li>'}</ul>
+            </div>
+            <div>
+              <h4>Suggested next steps</h4>
+              <ul class="bullet-list">${steps || '<li>Keep refining your portfolio and skill stack.</li>'}</ul>
+            </div>
+          </div>
+         
+          <div class="job-guidance-box">
+            <strong>Eligibility guidance</strong>
+            <p>${recommendation.eligibility_guidance || recommendation.note || 'This is a role fit estimate based on your current profile.'}</p>
+          </div>
+
+          
+          
+<div class="job-company-box">
+  <h4>Company & Application</h4>
+
+  <p>
+    <strong>Company:</strong>
+    ${recommendation.company || 'Company not available'}
+  </p>
+
+  ${
+    recommendation.application_url
+      ? `<p>
+          <strong>Application link:</strong>
+          <a href="${recommendation.application_url}"
+             target="_blank"
+             rel="noopener noreferrer">
+            Apply Now / View Openings
+          </a>
+        </p>`
+      : '<p>Application link not available.</p>'
+  }
+
+  <button
+    type="button"
+    class="mark-applied-btn"
+    data-role="${recommendation.title || recommendation.role || ''}"
+    data-company="${recommendation.company || ''}"
+    data-location="${recommendation.location || ''}">
+    I've Applied
+  </button>
+</div>
+
+
+        `;
+
+        return card;
+      }
+
+     
+function renderRecommendations(data) {
+  jobResultList.innerHTML = '';
+
+  const recommendations = data.recommendations || [];
+
+  if (recommendations.length === 0) {
+    jobEmpty.textContent =
+      'No recommendations found. Try adding more skills.';
+    jobEmpty.classList.remove('hidden');
+    jobResultList.classList.add('hidden');
+    return;
+  }
+
+  recommendations.forEach((recommendation) => {
+    jobResultList.appendChild(
+      renderRecommendationCard(recommendation)
+    );
+  });
+
+  jobEmpty.classList.add('hidden');
+  jobResultList.classList.remove('hidden');
+  jobResults.classList.remove('hidden');
+}
+
+      function getStoredResumeAnalysis() {
+        try {
+          const raw = localStorage.getItem('resumeAnalysis');
+          if (!raw) return null;
+          return JSON.parse(raw);
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function populateProfileDefaults() {
+        const storedProfile = localStorage.getItem('user_profile');
+        if (!storedProfile) return;
+
+        try {
+          const profile = JSON.parse(storedProfile);
+          const career = profile.career_information || {};
+          const skills = profile.skills || {};
+
+          if (career.target_job_role) preferredRole.value = career.target_job_role;
+          if (career.experience_level) experienceLevel.value = career.experience_level;
+          if (career.preferred_work_location) locationPreference.value = career.preferred_work_location;
+
+          const combinedSkills = [
+            ...(skills.programming_languages || []),
+            ...(skills.technical_skills || []),
+            ...(skills.tools_technologies || []),
+            ...(skills.soft_skills || [])
+          ];
+
+          if (combinedSkills.length) {
+            keySkills.value = combinedSkills.join(', ');
+          }
+        } catch (error) {
+          console.warn('Profile preload failed:', error);
+        }
+      }
+
+      loadProfileBtn.addEventListener('click', () => {
+        populateProfileDefaults();
+      });
+console.log('Job Recommendations form handler loaded');
+document.getElementById('job-submit').addEventListener('click', function () {
+  console.log('BUTTON CLICK EVENT FIRED');
+});
+
+console.log('Job form found:', !!jobForm);
+console.log('Submit button found:', !!jobSubmit);
+
+     jobSubmit.addEventListener('click', async (event) => {
+        event.preventDefault();
+        console.log('Find recommendations button clicked');
+        clearJobError();
+        showJobLoading(true);
+
+        const profilePayload = localStorage.getItem('user_profile');
+        const resumeAnalysis = document.getElementById('use-resume-insights').checked ? getStoredResumeAnalysis() : null;
+
+        const payload = {
+          user_id: localStorage.getItem('user_id') || 'guest',
+          preferred_role: preferredRole.value.trim(),
+          experience_level: experienceLevel.value,
+          location_preference: locationPreference.value.trim(),
+          key_skills: keySkills.value
+            .split(',')
+            .map((part) => part.trim())
+            .filter(Boolean),
+          resume_analysis: resumeAnalysis || {},
+          profile: profilePayload ? JSON.parse(profilePayload) : {}
+        };
+
+        if (!payload.preferred_role && !payload.key_skills.length && !payload.profile?.skills) {
+          showJobLoading(false);
+          setJobError('Add a preferred role, skills, or profile context to generate recommendations.');
+          return;
+        }
+
+        jobSubmit.disabled = true;
+        jobSubmit.textContent = 'Finding roles...';
+
+        try {
+          const response = await fetch('http://127.0.0.1:8018/api/jobs/recommendations', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json().catch(() => ({}));
+          console.log('Job API response:', response.status, data);
+          if (!response.ok) {
+            throw new Error(data.detail || 'The recommendation request failed.');
+          }
+
+         
+localStorage.setItem(
+  'savedJobRecommendations',
+  JSON.stringify(data)
+);
+
+renderRecommendations(data);
+jobResults.classList.remove('hidden');
+
+          console.log('Results rendered:', jobResultList.children.length);
+console.log('Results section hidden:', jobResults.classList.contains('hidden'));
+console.log('Results section:', jobResults.outerHTML);
+console.log('Results display:', getComputedStyle(jobResults).display);
+console.log('Results height:', jobResults.offsetHeight);
+console.log('Cards:', jobResultList.innerHTML);
+        } catch (error) {
+          setJobError(error.message || 'Unable to generate recommendations right now.');
+        } finally {
+          showJobLoading(false);
+          jobSubmit.disabled = false;
+          jobSubmit.textContent = 'Find recommendations';
+        }
+      });
+
+      const resumeAnalysis = getStoredResumeAnalysis();
+      if (resumeAnalysis && resumeAnalysis.matched_skills && resumeAnalysis.matched_skills.length) {
+        keySkills.value = resumeAnalysis.matched_skills.join(', ');
+      }
+
+      populateProfileDefaults();
+      
+
+const savedRecommendations = localStorage.getItem(
+  'savedJobRecommendations'
+);
+
+if (savedRecommendations) {
+  try {
+    const savedData = JSON.parse(savedRecommendations);
+
+    if (
+      savedData &&
+      Array.isArray(savedData.recommendations) &&
+      savedData.recommendations.length > 0
+    ) {
+      renderRecommendations(savedData);
+      jobResults.classList.remove('hidden');
+      jobEmpty.classList.add('hidden');
+      jobResultList.classList.remove('hidden');
+
+      console.log('Saved recommendations restored successfully.');
+    }
+  } catch (error) {
+    console.error('Could not restore saved recommendations:', error);
+  }
+}
+
+
+    </script>
+    
+<hr>
+
+<section id="application-tracker">
+  <h2>My Job Application Tracker</h2>
+  <p>Keep track of jobs you are interested in and your application progress.</p>
+  <div id="application-summary"
+     style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:16px 0;">
+</div>
+
+  <form id="application-form">
+    <label for="application-role">Job role</label>
+    <input id="application-role" type="text" placeholder="e.g. Python Developer" required>
+
+    <label for="application-company">Company name</label>
+    <input id="application-company" type="text" placeholder="e.g. ABC Technologies" required>
+
+    <label for="application-location">Location</label>
+    <input id="application-location" type="text" placeholder="e.g. Hyderabad">
+
+    <label for="application-status">Application status</label>
+    <select id="application-status" required>
+      <option value="Interested">Interested</option>
+      <option value="Applied">Applied</option>
+      <option value="Interview">Interview</option>
+      <option value="Offered">Offered</option>
+      <option value="Rejected">Rejected</option>
+    </select>
+
+    <button type="submit">Add Application</button>
+  </form>
+
+  <p id="application-message" role="status"></p>
+
+  <h3>My Applications</h3>
+  <div id="application-list">Loading applications...</div>
+</section>
+
+<script>
+const applicationForm = document.getElementById("application-form");
+const applicationList = document.getElementById("application-list");
+const applicationMessage = document.getElementById("application-message");
+
+async function loadApplications() {
+  const userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    applicationList.textContent = "Please load your profile or sign in to manage applications.";
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `http://127.0.0.1:8018/api/job-applications/${encodeURIComponent(userId)}`
+    );
+
+    const data = await response.json();
+
+    
+const applications = data.applications || [];
+
+const counts = {
+  "Total Applications": applications.length,
+  "Interested": applications.filter(a => a.status === "Interested").length,
+  "Applied": applications.filter(a => a.status === "Applied").length,
+  "Interviews": applications.filter(a => a.status === "Interview").length,
+  "Offers": applications.filter(a => a.status === "Offered").length,
+  "Rejected": applications.filter(a => a.status === "Rejected").length
+};
+
+const applicationSummary = document.getElementById("application-summary");
+applicationSummary.replaceChildren();
+
+Object.entries(counts).forEach(([label, count]) => {
+  const card = document.createElement("div");
+  card.style.cssText =
+    "border:1px solid #ddd;border-radius:10px;padding:14px;background:#fff;";
+
+  const heading = document.createElement("p");
+  heading.textContent = label;
+
+  const value = document.createElement("h3");
+  value.textContent = String(count);
+
+  card.append(heading, value);
+  applicationSummary.appendChild(card);
+});
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Could not load applications.");
+    }
+
+    applicationList.replaceChildren();
+
+   if (applications.length === 0)  {
+      applicationList.textContent = "No applications added yet.";
+      return;
+    }
+
+    applications.forEach((application) => {
+      const card = document.createElement("div");
+      card.style.cssText =
+        "border:1px solid #ddd;border-radius:8px;padding:12px;margin:10px 0;";
+
+      const title = document.createElement("h3");
+      title.textContent = application.role;
+
+      const company = document.createElement("p");
+      company.textContent = "Company: " + application.company;
+
+      const location = document.createElement("p");
+      location.textContent = "Location: " + (application.location || "Not specified");
+
+     
+      const statusLabel = document.createElement("label");
+      statusLabel.textContent = "Application status: ";
+      statusLabel.htmlFor = "application-status-" + application.created_at;
+
+      const statusSelect = document.createElement("select");
+      statusSelect.id = statusLabel.htmlFor;
+
+      const statuses = [
+        "Interested",
+        "Applied",
+        "Interview",
+        "Offered",
+        "Rejected"
+      ];
+
+      statuses.forEach((value) => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        statusSelect.appendChild(option);
+      });
+
+      statusSelect.value = application.status || "Interested";
+
+      const statusMessage = document.createElement("p");
+      statusMessage.textContent = "";
+
+      statusSelect.addEventListener("change", async () => {
+        statusMessage.textContent = "Saving status...";
+
+        try {
+          const response = await fetch(
+            "http://127.0.0.1:8018/api/job-applications/status",
+            {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                user_id: application.user_id,
+                created_at: application.created_at,
+                status: statusSelect.value
+              })
+            }
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.detail || "Could not update status.");
+          }
+
+          application.status = statusSelect.value;
+          statusMessage.textContent = "Status saved successfully!";
+        } catch (error) {
+          console.error("Updating application status failed:", error);
+          statusMessage.textContent =
+            "Could not save status. Please try again.";
+          statusSelect.value = application.status || "Interested";
+        }
+      });
+
+      statusLabel.style.display = "block";
+      statusSelect.style.cssText =
+        "margin:8px 0;padding:8px;border:1px solid #ccc;border-radius:6px;";
+
+      card.append(
+        title,
+        company,
+        location,
+        statusLabel,
+        statusSelect,
+        statusMessage
+      );
+      applicationList.appendChild(card);
+
+    });
+  } catch (error) {
+    console.error("Loading applications failed:", error);
+    applicationList.textContent =
+      "Could not load applications. Check that the backend is running.";
+  }
+}
+
+applicationForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const userId = localStorage.getItem("user_id");
+
+  if (!userId) {
+    applicationMessage.textContent =
+      "Please load your profile or sign in before adding an application.";
+    return;
+  }
+
+  const payload = {
+    user_id: userId,
+    role: document.getElementById("application-role").value.trim(),
+    company: document.getElementById("application-company").value.trim(),
+    location: document.getElementById("application-location").value.trim(),
+    status: document.getElementById("application-status").value
+  };
+
+  if (!payload.role || !payload.company) {
+    applicationMessage.textContent = "Please enter the job role and company.";
+    return;
+  }
+
+  applicationMessage.textContent = "Saving application...";
+
+  try {
+    const response = await fetch("http://127.0.0.1:8018/api/job-applications", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Could not save application.");
+    }
+
+    applicationMessage.textContent = "Application saved successfully!";
+    applicationForm.reset();
+
+    await loadApplications();
+  } catch (error) {
+    console.error("Saving application failed:", error);
+    applicationMessage.textContent =
+      "Could not save application. Check the backend and try again.";
+  }
+});
+
+loadApplications();
+
+document.addEventListener("click", async (event) => {
+  const button = event.target.closest(".mark-applied-btn");
+  if (!button) return;
+
+  const role = button.dataset.role;
+  const company = button.dataset.company;
+  const location = button.dataset.location || "";
+
+  if (!role || !company) {
+    alert("Job role or company details are missing.");
+    return;
+  }
+
+  if (!confirm(`Have you submitted your application for ${role} at ${company}?`)) {
+    return;
+  }
+
+  const userId = localStorage.getItem("user_id") || "demo-user";
+
+  button.disabled = true;
+  button.textContent = "Saving...";
+
+  try {
+    const response = await fetch(
+      "http://127.0.0.1:8018/api/job-applications",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: userId,
+          role: role,
+          company: company,
+          location: location,
+          status: "Applied"
+        })
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.detail || "Could not save application.");
+    }
+
+    button.textContent = "Applied âœ“";
+    alert("Application saved to your Job Tracker!");
+
+    if (typeof loadApplications === "function") {
+      await loadApplications();
+    }
+  } catch (error) {
+    alert(error.message || "Could not connect to the backend.");
+    button.disabled = false;
+    button.textContent = "I've Applied";
+  }
+});
+
+</script>
+
+  </body>
+</html>
+

@@ -1,0 +1,286 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Account</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item" href="dashboard.html">Home</a>
+          <a class="nav-item" href="tutor.html">AI Tutor</a>
+          <a class="nav-item" href="tests.html">Practice Tests</a>
+          <a class="nav-item" href="performance.html">Performance Tracker</a>
+          <a class="nav-item" href="resume.html">Resume Analyzer</a>
+          <a class="nav-item" href="jobs.html">Job Recommendations</a>
+          
+          <a class="nav-item" href="planner.html">Study Planner</a>
+          <a class="nav-item" href="ats.html">ATS Score Checker</a>
+          <a class="nav-item" href="learning.html">Learning Plans</a>
+          <a class="nav-item" href="interviews.html">Mock Interviews</a>
+          <a class="nav-item" href="profile.html">My Profile</a>
+        </nav>
+      </aside>
+
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Profile</p>
+            <h1>My account overview</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="users.html">View saved profile records</a>
+          </div>
+        </header>
+
+      
+<section class="workspace-panel">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;"><h2>My Profile</h2><button type="button" id="editProfileToggleBtn" class="btn btn-primary">Edit Profile</button></div>
+  <p id="profileIntro">Your saved profile information appears below. Use Edit Profile to make changes.</p>
+  <div id="profileOverview" aria-live="polite"><p>Loading your saved profile...</p></div>
+
+  <p id="profileStatus" role="status">Loading your saved profile...</p>
+
+  <form id="editProfileForm" style="display:none;">
+    <h3>Personal Information</h3>
+    <div class="form-grid">
+      <div class="field-group">
+        <label for="edit_full_name">Full Name</label>
+        <input id="edit_full_name" name="full_name" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_preferred_name">Preferred Name</label>
+        <input id="edit_preferred_name" name="preferred_name" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_email">Email</label>
+        <input id="edit_email" name="email" type="email" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_phone_number">Phone Number</label>
+        <input id="edit_phone_number" name="phone_number" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_date_of_birth">Date of Birth</label>
+        <input id="edit_date_of_birth" name="date_of_birth" type="date" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_gender">Gender</label>
+        <select id="edit_gender" name="gender" required>
+          <option value="">Select</option>
+          <option>Female</option>
+          <option>Male</option>
+          <option>Non-binary</option>
+          <option>Prefer not to say</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label for="edit_current_city">Current City</label>
+        <input id="edit_current_city" name="current_city" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_country">Country</label>
+        <input id="edit_country" name="country" required />
+      </div>
+    </div>
+
+    <h3>Education</h3>
+    <div class="form-grid">
+      <div class="field-group">
+        <label for="edit_highest_education_level">Highest Education Level</label>
+        <input id="edit_highest_education_level" name="highest_education_level" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_degree_course">Degree / Course</label>
+        <input id="edit_degree_course" name="degree_course" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_specialization_branch">Specialization / Branch</label>
+        <input id="edit_specialization_branch" name="specialization_branch" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_college_university">College / University</label>
+        <input id="edit_college_university" name="college_university" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_graduation_year">Graduation Year</label>
+        <input id="edit_graduation_year" name="graduation_year" type="number" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_current_education_status">Current Education Status</label>
+        <input id="edit_current_education_status" name="current_education_status" required />
+      </div>
+    </div>
+
+    <h3>Career Information</h3>
+    <div class="form-grid">
+      <div class="field-group">
+        <label for="edit_current_status">Current Status</label>
+        <input id="edit_current_status" name="current_status" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_target_job_role">Target Job Role</label>
+        <input id="edit_target_job_role" name="target_job_role" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_preferred_industry">Preferred Industry</label>
+        <input id="edit_preferred_industry" name="preferred_industry" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_preferred_work_location">Preferred Work Location</label>
+        <input id="edit_preferred_work_location" name="preferred_work_location" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_experience_level">Experience Level</label>
+        <input id="edit_experience_level" name="experience_level" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_current_company">Current Company</label>
+        <input id="edit_current_company" name="current_company" />
+      </div>
+      <div class="field-group">
+        <label for="edit_current_job_role">Current Job Role</label>
+        <input id="edit_current_job_role" name="current_job_role" />
+      </div>
+    </div>
+
+    <h3>Skills</h3>
+    <div class="form-grid">
+      <div class="field-group full-width">
+        <label for="edit_programming_languages">Programming Languages</label>
+        <input id="edit_programming_languages" name="programming_languages" />
+        <small>Separate values with commas.</small>
+      </div>
+      <div class="field-group full-width">
+        <label for="edit_technical_skills">Technical Skills</label>
+        <input id="edit_technical_skills" name="technical_skills" />
+      </div>
+      <div class="field-group full-width">
+        <label for="edit_tools_technologies">Tools / Technologies</label>
+        <input id="edit_tools_technologies" name="tools_technologies" />
+      </div>
+      <div class="field-group full-width">
+        <label for="edit_soft_skills">Soft Skills</label>
+        <input id="edit_soft_skills" name="soft_skills" />
+      </div>
+    </div>
+
+    <h3>Career Goals</h3>
+    <div class="form-grid">
+      <div class="field-group full-width">
+        <label for="edit_short_term_career_goal">Short-term Career Goal</label>
+        <textarea id="edit_short_term_career_goal" name="short_term_career_goal" required></textarea>
+      </div>
+      <div class="field-group full-width">
+        <label for="edit_long_term_career_goal">Long-term Career Goal</label>
+        <textarea id="edit_long_term_career_goal" name="long_term_career_goal" required></textarea>
+      </div>
+      <div class="field-group">
+        <label for="edit_target_role">Target Role</label>
+        <input id="edit_target_role" name="target_role" required />
+      </div>
+      <div class="field-group">
+        <label for="edit_target_companies">Target Companies</label>
+        <input id="edit_target_companies" name="target_companies" />
+      </div>
+      <div class="field-group full-width">
+        <label for="edit_areas_to_improve">Areas to Improve</label>
+        <input id="edit_areas_to_improve" name="areas_to_improve" />
+      </div>
+    </div>
+
+    <h3>Preferred Learning Style</h3>
+    <div class="checkbox-grid" id="editLearningStyles">
+      <label><input type="checkbox" name="preferred_learning_style" value="Text" /> Text</label>
+      <label><input type="checkbox" name="preferred_learning_style" value="Video" /> Video</label>
+      <label><input type="checkbox" name="preferred_learning_style" value="Practical Projects" /> Practical Projects</label>
+      <label><input type="checkbox" name="preferred_learning_style" value="AI Conversation" /> AI Conversation</label>
+      <label><input type="checkbox" name="preferred_learning_style" value="Voice Learning" /> Voice Learning</label>
+      <label><input type="checkbox" name="preferred_learning_style" value="Mixed" /> Mixed</label>
+    </div>
+
+    <h3>Resume</h3>
+    <div class="upload-panel">
+      <label class="upload-box" for="resume_file">
+        <input id="resume_file" name="resume_file" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+        <span class="upload-title">Upload a replacement resume</span>
+        <span class="upload-subtitle">PDF or DOCX</span>
+      </label>
+
+      <div class="skip-toggle">
+        <label>
+          <input id="skip_resume" type="checkbox" />
+          Keep the current resume and do not replace it
+        </label>
+      </div>
+
+      <div class="form-actions" style="justify-content: flex-start; margin-top: 12px; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-secondary" type="button" id="editResumeBtn">Edit Resume</button>
+        <button class="btn btn-secondary" type="button" id="removeResumeBtn">Remove Resume</button>
+      </div>
+    </div>
+
+    <div id="resumeEditorPanel" style="display: none; margin-top: 20px; padding: 16px; border: 1px solid #dfe3f0; border-radius: 12px; background: #f7f8fc;">
+      <p id="resumeEditorStatus" style="margin-top: 0; font-weight: 600; color: #4f46e5;">Load the current resume to edit it.</p>
+      <label for="resumeEditText" style="display: block; margin-bottom: 8px; font-weight: 600;">Resume content</label>
+      <textarea id="resumeEditText" rows="18" style="width: 100%; min-height: 330px; resize: vertical; padding: 12px; border-radius: 10px; border: 1px solid #cfd8e3; font-family: inherit; font-size: 14px; box-sizing: border-box;"></textarea>
+      <div class="form-actions" style="justify-content: flex-start; margin-top: 12px; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-primary" type="button" id="saveResumeBtn">Save Resume</button>
+        <button class="btn btn-secondary" type="button" id="cancelResumeEditBtn">Cancel</button>
+      </div>
+    </div>
+
+    <p id="resumeStatus">No replacement resume selected. Your current resume will be kept.</p>
+    <p>To preserve your existing resume, leave the resume unchanged on this page.</p>
+
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit" id="saveProfileBtn">Save Changes</button>
+      <a class="btn btn-secondary" href="dashboard.html">Cancel</a>
+    </div>
+  </form>
+</section>
+      <section class="workspace-panel" style="margin-top:24px;">
+  <p class="eyebrow">Your personal workspace</p>
+  <h2>Quick Access</h2>
+
+  <div class="feature-grid">
+    <article class="mini-panel">
+      <div class="mini-panel-header">
+        <h3>📝 Personal Notes</h3>
+      </div>
+      <p>Keep your study notes, ideas, and important reminders together.</p>
+      <a class="btn btn-secondary" href="notes.html">Open Personal Notes</a>
+    </article>
+
+    <article class="mini-panel">
+      <div class="mini-panel-header">
+        <h3>🏆 Achievements</h3>
+      </div>
+      <p>See your badges and completed milestones.</p>
+      <a class="btn btn-secondary" href="achievements.html">View Achievements</a>
+    </article>
+  </div>
+</section>
+</main>
+    </div>
+    <script src="script.js"></script>
+    <script src="profile.js"></script>
+  </body>
+</html>
+
+
+
+
+

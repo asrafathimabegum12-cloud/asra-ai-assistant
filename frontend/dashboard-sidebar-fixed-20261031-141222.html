@@ -1,0 +1,268 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Learning Platform</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item active" href="dashboard.html">Home</a>
+          <a class="nav-item" href="tutor.html">AI Tutor</a>
+          <a class="nav-item" href="tests.html">Practice Tests</a>
+          <a class="nav-item" href="performance.html">Performance Tracker</a>
+          <a class="nav-item" href="resume.html">Resume Analyzer</a>
+          <a class="nav-item" href="jobs.html">Job Recommendations</a>
+          <a class="nav-item" href="profile.html">Edit Profile</a>
+          <a class="nav-item" href="learning.html">Learning Plans</a>
+          <a class="nav-item" href="interviews.html">Mock Interviews</a>
+          <a class="nav-item" href="profile.html">My Profile</a>
+        </nav>
+
+        <div class="sidebar-card">
+          <p class="eyebrow">Current profile</p>
+          <strong id="profileSummaryName">Guest learner</strong>
+          <a class="btn btn-secondary btn-small" href="index.html">Edit profile</a>
+        </div>
+      </aside>
+
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Dashboard</p>
+            <h1>Welcome back to your growth path</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="users.html">Saved profiles</a>
+            <a class="btn btn-primary" href="tutor.html">Open AI Tutor</a>
+          </div>
+        </header>
+
+        <section class="stats-row" aria-label="Overview stats">
+          <article class="stat-card">
+            <span class="stat-label">Learning streak</span>
+            <strong>12 days</strong>
+            <small>Consistent practice</small>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Completed tests</span>
+            <strong id="overviewTests">0</strong>
+            <small>Across all topics</small>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Average score</span>
+            <strong id="overviewAverage">0%</strong>
+            <small>Current performance</small>
+          </article>
+        </section>
+
+        <section class="panel-grid">
+          <article class="workspace-panel feature-panel">
+            <p class="eyebrow">AI Tutor</p>
+            <h3>Personalized career guidance</h3>
+            <p>Ask questions, review study plans, and strengthen your interview and technical prep.</p>
+            <a class="btn btn-primary" href="tutor.html">Open workspace</a>
+          </article>
+
+          <article class="workspace-panel feature-panel">
+            <p class="eyebrow">Practice</p>
+            <h3>Skill checks and instant feedback</h3>
+            <p>Practice core subjects with short tests and clear scoring feedback.</p>
+            <a class="btn btn-secondary" href="tests.html">Start test</a>
+          </article>
+
+          <article class="workspace-panel feature-panel">
+            <p class="eyebrow">Tracker</p>
+            <h3>Performance at a glance</h3>
+            <p>Monitor subject-wise progress, attempts, and recent results.</p>
+            <a class="btn btn-secondary" href="performance.html">View analytics</a>
+          </article>
+          <article class="workspace-panel feature-panel">
+            <p class="eyebrow">Daily Organization</p>
+            <h3>Study Planner</h3>
+            <p>Organize your daily study tasks, deadlines, and interview questions.</p>
+            <a class="btn btn-secondary" href="planner.html">Open Study Planner</a>
+          </article>
+
+          <article class="workspace-panel feature-panel">
+            <p class="eyebrow">Resume Preparation</p>
+            <h3>ATS Score Checker</h3>
+            <p>Check your resume against a job description and improve your resume.</p>
+            <a class="btn btn-secondary" href="ats.html">Open ATS Checker</a>
+          </article>
+        </section>
+                <!-- Career Progress Dashboard -->
+        <section class="workspace-panel career-progress">
+          <p class="eyebrow">Career Overview</p>
+          <h2>Your Career Progress</h2>
+          <p>Track your job search and preparation journey in one place.</p>
+
+          <div class="stats-row">
+            <article class="stat-card">
+              <span class="stat-label">Total Applications</span>
+              <strong id="totalApplications">0</strong>
+            </article>
+
+            <article class="stat-card">
+              <span class="stat-label">Interviews</span>
+              <strong id="totalInterviews">0</strong>
+            </article>
+
+            <article class="stat-card">
+              <span class="stat-label">Job Offers</span>
+              <strong id="totalOffers">0</strong>
+            </article>
+
+            <article class="stat-card">
+              <span class="stat-label">Mock Interviews</span>
+              <strong id="totalMockInterviews">0</strong>
+            </article>
+          </div>
+
+          <a class="btn btn-primary" href="jobs.html">
+            Open Job Tracker
+</a> 
+            
+<div class="panel-grid" style="margin-top:25px;">
+
+  <article class="workspace-panel">
+    <h3>Job Application Status</h3>
+    <div style="position:relative;height:280px;">
+      <canvas id="careerApplicationChart"></canvas>
+    </div>
+  </article>
+
+  <article class="workspace-panel">
+    <h3>Subject-wise Test Performance</h3>
+    <div style="position:relative;height:280px;">
+      <canvas id="careerPerformanceChart"></canvas>
+    </div>
+  </article>
+
+  <article class="workspace-panel">
+    <h3>Career Activity Overview</h3>
+    <div style="position:relative;height:280px;">
+      <canvas id="careerActivityChart"></canvas>
+    </div>
+  </article>
+
+</div>
+
+            Open Job Tracker
+          </a>
+        </section>
+      </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      const userLabel = document.getElementById('profileSummaryName');
+      if (userLabel) {
+        const userId = localStorage.getItem('user_id');
+        userLabel.textContent = userId ? userId : 'Guest learner';
+      }
+      async function loadCareerProgress() {
+  const userId = localStorage.getItem('user_id');
+
+  if (!userId) return;
+
+  try {
+    const [appResponse, testResponse, interviewResponse] = await Promise.all([
+      fetch(`http://127.0.0.1:8018/api/job-applications/${encodeURIComponent(userId)}`),
+      fetch(`http://127.0.0.1:8018/api/tests/performance/${encodeURIComponent(userId)}`),
+      fetch(`http://127.0.0.1:8018/api/interviews/${encodeURIComponent(userId)}`)
+    ]);
+
+   if (!appResponse.ok || !testResponse.ok || !interviewResponse.ok) {
+      throw new Error('Unable to load dashboard data');
+    }
+
+    const appData = await appResponse.json();
+    const testData = await testResponse.json();
+    const interviewData = await interviewResponse.json();
+
+document.getElementById('totalMockInterviews').textContent =
+  (interviewData.history || []).length;
+
+    const applications = appData.applications || [];
+
+    document.getElementById('totalApplications').textContent = applications.length;
+
+    document.getElementById('totalInterviews').textContent =
+      applications.filter(a => a.status === 'Interview').length;
+
+    document.getElementById('totalOffers').textContent =
+      applications.filter(a => a.status === 'Offered').length;
+
+    const statuses = ['Interested', 'Applied', 'Interview', 'Offered', 'Rejected'];
+
+    new Chart(document.getElementById('careerApplicationChart'), {
+      type: 'pie',
+      data: {
+        labels: statuses,
+        datasets: [{
+          data: statuses.map(s =>
+            applications.filter(a => a.status === s).length
+          )
+        }]
+      },
+      options: { responsive: true }
+    });
+
+    const summary = testData.subject_summary || {};
+    const subjects = Object.keys(summary);
+
+    new Chart(document.getElementById('careerPerformanceChart'), {
+      type: 'bar',
+      data: {
+        labels: subjects,
+        datasets: [{
+          label: 'Average Score (%)',
+          data: subjects.map(s => summary[s].average_score || 0)
+        }]
+      },
+      options: { responsive: true }
+    });
+
+    new Chart(document.getElementById('careerActivityChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Applications', 'Completed Tests', 'Interviews', 'Offers'],
+        datasets: [{
+          label: 'Activities',
+          data: [
+            applications.length,
+            testData.completed_tests || 0,
+            applications.filter(a => a.status === 'Interview').length,
+            applications.filter(a => a.status === 'Offered').length
+          ]
+        }]
+      },
+      options: { responsive: true }
+    });
+
+  } catch (error) {
+    console.error('Career Dashboard Error:', error);
+  }
+}
+
+loadCareerProgress();
+      // Growth Studio tools now use their dedicated pages.
+
+  </script>
+  </body>
+</html>
+
+
+

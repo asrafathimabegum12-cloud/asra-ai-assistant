@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Practice Tests | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Practice</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item" href="dashboard.html">Home</a>
+          <a class="nav-item" href="tutor.html">AI Tutor</a>
+          <a class="nav-item" href="tests.html">Practice Tests</a>
+          <a class="nav-item" href="performance.html">Performance Tracker</a>
+          <a class="nav-item" href="resume.html">Resume Analyzer</a>
+          <a class="nav-item" href="jobs.html">Job Recommendations</a>
+          <a class="nav-item" href="profile.html">Edit Profile</a>
+          <a class="nav-item" href="planner.html">Study Planner</a>
+          <a class="nav-item" href="ats.html">ATS Score Checker</a>
+          <a class="nav-item" href="learning.html">Learning Plans</a>
+          <a class="nav-item" href="interviews.html">Mock Interviews</a>
+          <a class="nav-item" href="profile.html">My Profile</a>
+        </nav>
+      </aside>
+
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Practice Testing</p>
+            <h1>Skills lab</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="performance.html">Performance</a>
+          </div>
+        </header>
+
+        <section id="practice-tests-section" class="practice-card workspace-practice" aria-label="Practice tests and performance tracker">
+          <div class="intro-banner practice-banner">
+            <div>
+              <p class="eyebrow">Practice Tests</p>
+              <h2>Measure your learning progress</h2>
+            </div>
+            <span class="summary-pill">4 subjects â€¢ instant scoring</span>
+          </div>
+
+          <div class="practice-layout">
+            <aside class="practice-panel subject-panel">
+              <h3>Subjects</h3>
+              <div id="subjectTabs" class="subject-tabs" aria-live="polite"></div>
+            </aside>
+
+            <section class="practice-panel quiz-panel">
+              <div id="practiceLoading" class="state-block">Loading your test bank...</div>
+              <div id="practiceEmpty" class="state-block hidden">No questions are available for this subject right now.</div>
+              <div id="practiceError" class="state-block hidden">Unable to load the practice test. Try again in a moment.</div>
+
+              <div id="quizContent" class="hidden">
+                <div class="question-header">
+                  <span id="questionCounter">Question 1/1</span>
+                  <span id="questionSubject" class="subject-pill"></span>
+                </div>
+                <h3 id="questionText" class="question-text"></h3>
+                <div id="answerOptions" class="answer-options"></div>
+
+                <div class="form-actions quiz-actions">
+                  <button type="button" class="btn btn-secondary" id="prevQuestion">Previous</button>
+                  <button type="button" class="btn btn-primary" id="nextQuestion">Next</button>
+                  <button type="button" class="btn btn-primary hidden" id="submitTestBtn">Submit Test</button>
+                </div>
+              </div>
+
+              <div id="testResult" class="result-card hidden"></div>
+            </section>
+
+            <aside class="practice-panel tracker-panel">
+              <h3>Performance Tracker</h3>
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <span class="stat-label">Completed</span>
+                  <strong id="completedTests">0</strong>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Average</span>
+                  <strong id="averageScore">0%</strong>
+                </div>
+                <div class="stat-box">
+                  <span class="stat-label">Best</span>
+                  <strong id="bestScore">0%</strong>
+                </div>
+              </div>
+
+              <div class="subject-breakdown">
+                <h4>Subject-wise Results</h4>
+                <div id="subjectSummary" class="subject-summary-list"></div>
+              </div>
+
+              <div class="attempts-panel">
+                <h4>Previous Attempts</h4>
+                <div id="attemptHistory" class="attempt-history"></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
+

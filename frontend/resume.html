@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Analyzer | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <div class="dashboard-shell">
+      <aside class="sidebar">
+        <div class="brand-wrap sidebar-brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Career Tools</p>
+            <h2>Asra AI</h2>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav" aria-label="Main navigation">
+          <a class="nav-item" href="dashboard.html">Home</a>
+          <a class="nav-item" href="tutor.html">AI Tutor</a>
+          <a class="nav-item" href="tests.html">Practice Tests</a>
+          <a class="nav-item" href="performance.html">Performance Tracker</a>
+          <a class="nav-item" href="resume.html">Resume Analyzer</a>
+          <a class="nav-item" href="jobs.html">Job Recommendations</a>
+          <a class="nav-item" href="profile.html">Edit Profile</a>
+          <a class="nav-item" href="planner.html">Study Planner</a>
+          <a class="nav-item" href="ats.html">ATS Score Checker</a>
+          <a class="nav-item" href="learning.html">Learning Plans</a>
+          <a class="nav-item" href="interviews.html">Mock Interviews</a>
+          <a class="nav-item" href="profile.html">My Profile</a>
+        </nav>
+      </aside>
+
+      <main class="workspace-main">
+        <header class="workspace-header">
+          <div>
+            <p class="eyebrow">Resume Analyzer</p>
+            <h1>Resume-to-role match</h1>
+          </div>
+          <div class="workspace-actions">
+            <a class="btn btn-secondary" href="dashboard.html">Back to dashboard</a>
+          </div>
+        </header>
+
+        <section class="workspace-panel">
+          <form id="resume-form" class="resume-form">
+            <div class="resume-upload-box">
+              <label for="resume-file" class="upload-box resume-upload-label">
+                <input id="resume-file" name="file" type="file" accept=".pdf,.doc,.docx" required />
+                <span class="upload-title">Upload your resume</span>
+                <span class="upload-subtitle">PDF or DOCX only â€¢ up to 5 MB</span>
+              </label>
+            </div>
+
+            <div class="field-group full-width">
+              <label for="job-description">Target job description</label>
+              <textarea id="job-description" name="job_description" rows="8" placeholder="Paste the role description here..." required></textarea>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" id="resume-submit" class="btn btn-primary">Analyze resume</button>
+            </div>
+            <div id="resume-error" class="error-text hidden" aria-live="polite"></div>
+          </form>
+        </section>
+
+        <section id="resume-results" class="workspace-panel hidden" aria-live="polite">
+          <div class="resume-summary-banner">
+            <p class="eyebrow">Analysis results</p>
+            <h2>Career fit summary</h2>
+          </div>
+
+          <div class="results-grid">
+            <article class="result-panel">
+              <h3>Matched skills</h3>
+              <ul id="matched-skills" class="tag-list"></ul>
+            </article>
+            <article class="result-panel">
+              <h3>Missing skills</h3>
+              <ul id="missing-skills" class="tag-list"></ul>
+            </article>
+            <article class="result-panel">
+              <h3>Resume sections detected</h3>
+              <ul id="resume-sections" class="tag-list"></ul>
+            </article>
+            <article class="result-panel wide-panel">
+              <h3>Improvement suggestions</h3>
+              <ul id="improvement-suggestions" class="bullet-list"></ul>
+            </article>
+          </div>
+
+          <p id="match-note" class="match-note"></p>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const resumeForm = document.getElementById('resume-form');
+      const resumeFile = document.getElementById('resume-file');
+      const resumeError = document.getElementById('resume-error');
+      const resumeSubmit = document.getElementById('resume-submit');
+      const resultsSection = document.getElementById('resume-results');
+
+      function showResumeError(message) {
+        resumeError.textContent = message || 'Something went wrong while analyzing your resume.';
+        resumeError.classList.remove('hidden');
+      }
+
+      function hideResumeError() {
+        resumeError.textContent = '';
+        resumeError.classList.add('hidden');
+      }
+
+      function renderList(listEl, values) {
+        listEl.innerHTML = '';
+        if (!values.length) {
+          const item = document.createElement('li');
+          item.textContent = 'No matches detected.';
+          listEl.appendChild(item);
+          return;
+        }
+
+        values.forEach((value) => {
+          const item = document.createElement('li');
+          item.textContent = value;
+          listEl.appendChild(item);
+        });
+      }
+
+      function renderSuggestions(listEl, values) {
+        listEl.innerHTML = '';
+        values.forEach((value) => {
+          const item = document.createElement('li');
+          item.textContent = value;
+          listEl.appendChild(item);
+        });
+      }
+
+      resumeForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        hideResumeError();
+
+        const jobDescription = document.getElementById('job-description').value.trim();
+        const file = resumeFile.files[0];
+        if (!file) {
+          showResumeError('Please upload a PDF or DOCX resume file.');
+          return;
+        }
+
+        const acceptedExtensions = ['pdf', 'docx'];
+        const fileExt = file.name.split('.').pop()?.toLowerCase();
+        if (!acceptedExtensions.includes(fileExt)) {
+          showResumeError('Only PDF and DOCX resume files are accepted.');
+          return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+          showResumeError('Resume files must be 5 MB or smaller.');
+          return;
+        }
+
+        if (!jobDescription) {
+          showResumeError('Please paste the target job description before running the analysis.');
+          return;
+        }
+
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('job_description', jobDescription);
+
+        resumeSubmit.disabled = true;
+        resumeSubmit.textContent = 'Analyzing...';
+
+        try {
+          const response = await fetch('http://127.0.0.1:8018/api/resume/analyze', {
+            method: 'POST',
+            body: formData,
+          });
+
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(data.detail || 'The resume analysis request failed.');
+          }
+
+          localStorage.setItem('resumeAnalysis', JSON.stringify(data));
+
+          renderList(document.getElementById('matched-skills'), data.matched_skills || []);
+          renderList(document.getElementById('missing-skills'), data.missing_skills || []);
+          renderList(document.getElementById('resume-sections'), data.resume_sections || []);
+          renderSuggestions(document.getElementById('improvement-suggestions'), data.improvement_suggestions || []);
+          document.getElementById('match-note').textContent = data.estimated_match_note || 'Skill matches are estimates based on text similarity only.';
+          resultsSection.classList.remove('hidden');
+        } catch (error) {
+          showResumeError(error.message || 'Unable to analyze the resume right now.');
+        } finally {
+          resumeSubmit.disabled = false;
+          resumeSubmit.textContent = 'Analyze resume';
+        }
+      });
+    </script>
+  </body>
+</html>
+

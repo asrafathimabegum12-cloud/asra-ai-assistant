@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saved Profiles | Asra's AI Assistant</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="users.css" />
+  </head>
+  <body>
+    <div class="page-shell users-page">
+      <header class="topbar users-topbar">
+        <div class="brand-wrap">
+          <div class="brand-mark">A</div>
+          <div>
+            <p class="eyebrow">Profile Directory</p>
+            <h1>Saved User Profiles</h1>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button id="refreshBtn" class="btn btn-primary" type="button">Refresh</button>
+          <a class="btn btn-secondary" href="index.html">Back to Form</a>
+        </div>
+      </header>
+
+      <main class="users-content">
+        <section class="users-panel">
+          <div id="loadingState" class="state-box hidden">
+            <div class="spinner" aria-label="Loading profiles"></div>
+            <p>Loading saved profiles...</p>
+          </div>
+
+          <div id="errorState" class="state-box error hidden"></div>
+
+          <div id="emptyState" class="state-box hidden">
+            <p>No profiles have been saved yet.</p>
+          </div>
+
+          <div id="profilesContainer" class="profiles-grid" aria-live="polite"></div>
+        </section>
+
+        <aside id="profileDetail" class="profile-detail">
+          <h2>User Details</h2>
+          <div id="detailContent" class="detail-content empty-detail">
+            Select a profile to view complete details.
+          </div>
+        </aside>
+      </main>
+    </div>
+
+    <script src="users.js"></script>
+  </body>
+</html>
