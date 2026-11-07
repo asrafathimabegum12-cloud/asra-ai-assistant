@@ -8,3 +8,4 @@ python-dotenv==1.0.1
 pypdf==5.3.1
 python-docx==1.1.2
 httpx
+google-genai
