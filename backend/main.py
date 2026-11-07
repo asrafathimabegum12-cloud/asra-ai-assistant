@@ -16,6 +16,7 @@ from docx import Document
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from backend.config import APP_NAME, CORS_ORIGINS
@@ -1861,7 +1862,13 @@ async def change_job_application_status(
         raise HTTPException(status_code=404, detail="Application not found.")
 
     return {"success": True, "application": updated}
+FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 
+app.mount(
+    "/",
+    StaticFiles(directory=FRONTEND_DIR, html=True),
+    name="frontend",
+)
 
 
 
